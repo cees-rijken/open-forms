@@ -4,6 +4,7 @@ from django.test import TestCase, tag
 from django.utils import timezone
 
 from freezegun import freeze_time
+from privates.test import temp_private_root
 
 from openforms.forms.tests.factories import FormFactory, FormStepFactory
 from openforms.variables.constants import FormVariableSources
@@ -12,6 +13,7 @@ from ..exports import create_submission_export
 from ..models import Submission
 from .factories import (
     SubmissionFactory,
+    SubmissionFileAttachmentFactory,
     SubmissionStepFactory,
     SubmissionValueVariableFactory,
 )
@@ -255,3 +257,64 @@ class ExportTests(TestCase):
                 "sub1.input2",
             ),
         )
+
+    @tag("gh-2305")
+    @temp_private_root()
+    def test_export_with_broken_formstep_references(self):
+        submission = SubmissionFactory.from_components(
+            [
+                {
+                    "type": "textfield",
+                    "key": "input1",
+                    "hidden": False,
+                },
+                {
+                    "type": "date",
+                    "key": "input2",
+                    "hidden": False,
+                },
+                {
+                    "type": "number",
+                    "key": "input3",
+                },
+                {
+                    "type": "textfield",
+                    "key": "input4",
+                    "multiple": True,
+                },
+                {
+                    "type": "map",
+                    "key": "input5",
+                },
+                {
+                    "type": "file",
+                    "key": "input6",
+                    "multiple": False,
+                },
+            ],
+            submitted_data={
+                "input1": "foobarbaz",
+                "input2": "2022-11-21",
+                "input3": 42,
+                "input4": ["foo", "bar"],
+                "input5": [52.00, 4.23],
+            },
+            completed=True,
+        )
+        step = submission.submissionstep_set.get()
+        SubmissionFileAttachmentFactory.create(
+            submission_step=step,
+            form_key="input6",
+            file_name="single-file.txt",
+        )
+        submission.form.formstep_set.all().delete()
+
+        dataset = create_submission_export(Submission.objects.all())
+
+        export_data = dataset.dict[0]
+        self.assertEqual(export_data["input1"], "foobarbaz")
+        self.assertEqual(export_data["input2"], "2022-11-21")
+        self.assertEqual(export_data["input3"], 42)
+        self.assertEqual(export_data["input4"], ["foo", "bar"])
+        self.assertEqual(export_data["input5"], [52.00, 4.23])
+        self.assertIsNotNone(export_data["input6"])
