@@ -1,8 +1,6 @@
-from typing import Literal, TypeAlias
 from unittest.mock import patch
 
 from django.core.files import File
-from django.template.response import TemplateResponse
 from django.test import TestCase, override_settings
 from django.urls import reverse
 
@@ -13,16 +11,15 @@ from freezegun import freeze_time
 from furl import furl
 from privates.test import temp_private_root
 from simple_certmanager.test.factories import CertificateFactory
-from webtest.forms import Form as WTForm
 
+from openforms.authentication.constants import FORM_AUTH_SESSION_KEY
 from openforms.forms.tests.factories import FormStepFactory
 from openforms.submissions.tests.factories import SubmissionFactory
 from openforms.submissions.tokens import submission_resume_token_generator
 from openforms.utils.tests.cache import clear_caches
 from openforms.utils.tests.vcr import OFVCRMixin
 
-from ....constants import FORM_AUTH_SESSION_KEY
-from .utils import TEST_FILES
+from .utils import TEST_FILES, _parse_form
 
 PLUGIN_ID = "eherkenning"
 KEY = TEST_FILES / "our_key.pem"
@@ -616,20 +613,3 @@ class SignicatEHerkenningIntegrationTests(OFVCRMixin, TestCase):
 #         config.want_assertions_signed = True
 #         config.want_assertions_encrypted = True
 #         config.save()
-
-
-# Helper functions
-
-# poor person's enum.StrEnum
-Method: TypeAlias = Literal["get", "post"]
-Response: TypeAlias = TemplateResponse | requests.Response
-
-
-def _parse_form(response: Response) -> tuple[Method, str, dict[str, str]]:
-    "Extract method, action URL and form values from html content"
-    form = WTForm(None, response.content)
-    url = form.action or response.url
-    assert url, f"No url found in {form}"
-    method = form.method
-    assert method in ("get", "post")
-    return method, url, dict(form.submit_fields())
