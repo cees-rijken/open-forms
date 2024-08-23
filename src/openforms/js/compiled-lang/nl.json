@@ -131,18 +131,6 @@
       "value": "Geef aan of deze waarde in de (bevestigings-)PDF moet getoond worden. Deze PDF wordt vaak ook als bijlage meegestuurd tijdens de registratie."
     }
   ],
-  "0D+m56": [
-    {
-      "type": 0,
-      "value": "Patroon of waarde voor de stad"
-    }
-  ],
-  "0FD2pY": [
-    {
-      "type": 0,
-      "value": "Validatieregels voor het postcodeveld"
-    }
-  ],
   "0M2B7B": [
     {
       "type": 0,
@@ -293,12 +281,6 @@
     {
       "type": 0,
       "value": "De minimale waarde die dit veld kan hebben voordat het formulier kan worden verzonden."
-    }
-  ],
-  "205QX5": [
-    {
-      "type": 0,
-      "value": "Wanneer e-mailadresverificatie ingeschakeld is, dan moet de gebruiker hun e-mail verifiëren voor ze het formulier kunnen insturen. Dit bewijst dat het e-mailadres geldig is en dat de gebruiker er toegang tot heeft."
     }
   ],
   "20K9To": [
@@ -471,12 +453,6 @@
     {
       "type": 0,
       "value": "Dagen"
-    }
-  ],
-  "4DrI94": [
-    {
-      "type": 0,
-      "value": "Reguliere expressie"
     }
   ],
   "4FQxD/": [
@@ -1401,12 +1377,6 @@
       "value": "length"
     }
   ],
-  "Cf5zSF": [
-    {
-      "type": 0,
-      "value": "Verifiëren"
-    }
-  ],
   "CiaAYL": [
     {
       "type": 0,
@@ -2016,26 +1986,6 @@
     {
       "type": 0,
       "value": "Verwijderen"
-    }
-  ],
-  "ISVTEk": [
-    {
-      "type": 0,
-      "value": "Het componenttype "
-    },
-    {
-      "children": [
-        {
-          "type": 1,
-          "value": "type"
-        }
-      ],
-      "type": 8,
-      "value": "code"
-    },
-    {
-      "type": 0,
-      "value": " is niet bekend. We kunnen enkel de JSON-definitie weergeven."
     }
   ],
   "IhIqdj": [
@@ -3314,12 +3264,6 @@
       "value": "In het verleden"
     }
   ],
-  "Wb+QGm": [
-    {
-      "type": 0,
-      "value": "Verplicht verificatie"
-    }
-  ],
   "WdVKZw": [
     {
       "type": 0,
@@ -3336,12 +3280,6 @@
     {
       "type": 0,
       "value": "URL naar het INFORMATIEOBJECTTYPE in een Catalogi API die wordt gebruikt voor de bijlagen."
-    }
-  ],
-  "WxwqZJ": [
-    {
-      "type": 0,
-      "value": "Het patroon van reguliere expressie waar de postcode aan moet voldoen voor het formulier kan verstuurd worden."
     }
   ],
   "Wz5QZo": [
@@ -4043,12 +3981,6 @@
       "value": "Item verwijderen"
     }
   ],
-  "dD9O3Q": [
-    {
-      "type": 0,
-      "value": "Patroon of waarde voor de postcode"
-    }
-  ],
   "dGBYF7": [
     {
       "options": {
@@ -4319,12 +4251,6 @@
       "value": "Geef een JsonLogic expressie voor de lijst van mogelijke opties. Evaluatie van de expressie moet een lijst teruggeven, waarbij elk element een lijst (array) is van [waarde, label] combinaties."
     }
   ],
-  "fhVFUY": [
-    {
-      "type": 0,
-      "value": "Stad"
-    }
-  ],
   "fpX4ei": [
     {
       "type": 0,
@@ -4457,20 +4383,6 @@
     {
       "type": 0,
       "value": "JSON-inhoud sjabloon"
-    }
-  ],
-  "hEVgKd": [
-    {
-      "type": 0,
-      "value": "Foutmelding voor \""
-    },
-    {
-      "type": 1,
-      "value": "key"
-    },
-    {
-      "type": 0,
-      "value": "\""
     }
   ],
   "hJtTwo": [
@@ -4955,12 +4867,6 @@
       "value": "Formulierveld"
     }
   ],
-  "mck25o": [
-    {
-      "type": 0,
-      "value": "Validatieregels voor het stad-veld"
-    }
-  ],
   "mf9eF+": [
     {
       "type": 0,
@@ -5097,12 +5003,6 @@
     {
       "type": 0,
       "value": "Stad"
-    }
-  ],
-  "osl4X2": [
-    {
-      "type": 0,
-      "value": "Het patroon van reguliere expressie waar de stad aan moet voldoen voor het formulier kan verstuurd worden."
     }
   ],
   "ow5AAO": [
@@ -5367,12 +5267,6 @@
       "value": "Bestaand object bijwerken"
     }
   ],
-  "rW1edF": [
-    {
-      "type": 0,
-      "value": "Postcode"
-    }
-  ],
   "rZfe8Z": [
     {
       "type": 0,
@@ -5441,12 +5335,6 @@
     {
       "type": 0,
       "value": "Let op! Migreren naar het nieuwe configuratieformaat maakt de bestaande JSON-sjablonen leeg. Daarnaast kan je het formulier pas opslaan als alle verplichte variabelen goed gekoppeld zijn. Ben je zeker dat je wil migreren?"
-    }
-  ],
-  "swKpQE": [
-    {
-      "type": 0,
-      "value": "Reguliere expressie"
     }
   ],
   "t5fg/K": [
@@ -5855,12 +5743,6 @@
     {
       "type": 0,
       "value": "Maximale lengte"
-    }
-  ],
-  "yGAl1a": [
-    {
-      "type": 0,
-      "value": "Sluiten"
     }
   ],
   "yIPUtA": [

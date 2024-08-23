@@ -9627,6 +9627,19 @@ components:
       description: |-
         * `main` - Main
         * `authorizee` - Authorizee
+    PrefillObjectsAPIAttribute:
+      type: object
+      properties:
+        value:
+          type: string
+          title: ID
+          description: The unique attribute identifier
+        label:
+          type: string
+          description: The human-readable name for an attribute.
+      required:
+      - label
+      - value
     PrefillPlugin:
       type: object
       properties:
