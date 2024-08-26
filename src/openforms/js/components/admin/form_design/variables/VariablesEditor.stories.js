@@ -1,4 +1,4 @@
-import {expect, fn, screen, userEvent, within} from '@storybook/test';
+import {expect, fn, screen, userEvent, waitFor, within} from '@storybook/test';
 
 import {mockPrefillAttributesGet} from 'components/admin/form_design/mocks';
 import {BACKEND_OPTIONS_FORMS} from 'components/admin/form_design/registrations';
@@ -13,73 +13,81 @@ BACKEND_OPTIONS_FORMS.testPlugin = {
   variableConfigurationEditor: () => 'placeholder',
 };
 
+const VARIABLES = [
+  {
+    form: 'http://localhost:8000/api/v2/forms/36612390',
+    formDefinition: 'http://localhost:8000/api/v2/form-definitions/6de1ea5a',
+    name: 'Form.io component',
+    key: 'formioComponent',
+    source: 'component',
+    prefillPlugin: '',
+    prefillAttribute: '',
+    prefillIdentifierRole: 'main',
+    dataType: 'string',
+    dataFormat: undefined,
+    isSensitiveData: false,
+    serviceFetchConfiguration: undefined,
+    initialValue: '',
+  },
+  {
+    form: 'http://localhost:8000/api/v2/forms/36612390',
+    formDefinition: 'http://localhost:8000/api/v2/form-definitions/6de1ea5a',
+    name: 'Single File',
+    key: 'aSingleFile',
+    source: 'component',
+    prefillPlugin: '',
+    prefillAttribute: '',
+    prefillIdentifierRole: 'main',
+    dataType: 'array',
+    dataFormat: undefined,
+    isSensitiveData: false,
+    serviceFetchConfiguration: undefined,
+    initialValue: [],
+  },
+  {
+    form: 'http://localhost:8000/api/v2/forms/36612390',
+    formDefinition: 'http://localhost:8000/api/v2/form-definitions/6de1ea5a',
+    name: 'Multiple File',
+    key: 'aMultipleFile',
+    source: 'component',
+    prefillPlugin: '',
+    prefillAttribute: '',
+    prefillIdentifierRole: 'main',
+    dataType: 'array',
+    dataFormat: undefined,
+    isSensitiveData: false,
+    serviceFetchConfiguration: undefined,
+    initialValue: [],
+  },
+  {
+    form: 'http://localhost:8000/api/v2/forms/36612390',
+    formDefinition: undefined,
+    name: 'User defined',
+    key: 'userDefined',
+    source: 'user_defined',
+    prefillPlugin: 'objects',
+    prefillAttribute: '',
+    prefillIdentifierRole: 'main',
+    dataType: 'array',
+    dataFormat: undefined,
+    isSensitiveData: false,
+    serviceFetchConfiguration: undefined,
+    initialValue: [],
+    prefillOptions: {
+      apiGroup: 1,
+      mappings: [{formVariable: 'formioComponent', prefillAttribute: 'street'}],
+    },
+  },
+];
+
 export default {
   title: 'Form design / Variables editor',
   component: VariablesEditor,
   decorators: [FormDecorator],
   args: {
-    variables: [
-      {
-        form: 'http://localhost:8000/api/v2/forms/36612390',
-        formDefinition: 'http://localhost:8000/api/v2/form-definitions/6de1ea5a',
-        name: 'Form.io component',
-        key: 'formioComponent',
-        source: 'component',
-        prefillPlugin: '',
-        prefillAttribute: '',
-        prefillIdentifierRole: 'main',
-        dataType: 'string',
-        dataFormat: undefined,
-        isSensitiveData: false,
-        serviceFetchConfiguration: undefined,
-        initialValue: '',
-      },
-      {
-        form: 'http://localhost:8000/api/v2/forms/36612390',
-        formDefinition: 'http://localhost:8000/api/v2/form-definitions/6de1ea5a',
-        name: 'Single File',
-        key: 'aSingleFile',
-        source: 'component',
-        prefillPlugin: '',
-        prefillAttribute: '',
-        prefillIdentifierRole: 'main',
-        dataType: 'array',
-        dataFormat: undefined,
-        isSensitiveData: false,
-        serviceFetchConfiguration: undefined,
-        initialValue: [],
-      },
-      {
-        form: 'http://localhost:8000/api/v2/forms/36612390',
-        formDefinition: 'http://localhost:8000/api/v2/form-definitions/6de1ea5a',
-        name: 'Multiple File',
-        key: 'aMultipleFile',
-        source: 'component',
-        prefillPlugin: '',
-        prefillAttribute: '',
-        prefillIdentifierRole: 'main',
-        dataType: 'array',
-        dataFormat: undefined,
-        isSensitiveData: false,
-        serviceFetchConfiguration: undefined,
-        initialValue: [],
-      },
-      {
-        form: 'http://localhost:8000/api/v2/forms/36612390',
-        formDefinition: undefined,
-        name: 'User defined',
-        key: 'userDefined',
-        source: 'user_defined',
-        prefillPlugin: '',
-        prefillAttribute: '',
-        prefillIdentifierRole: 'main',
-        dataType: 'array',
-        dataFormat: undefined,
-        isSensitiveData: false,
-        serviceFetchConfiguration: undefined,
-        initialValue: [],
-      },
-    ],
+    // TODO are both needed?
+    variables: VARIABLES,
+    availableFormVariables: VARIABLES,
     availableStaticVariables: [
       {
         form: null,
@@ -116,6 +124,7 @@ export default {
     availablePrefillPlugins: [
       {id: 'stuf-bg', label: 'StUF-BG'},
       {id: 'haalcentraal', label: 'BRP Personen (HaalCentraal)'},
+      {id: 'objects', label: 'Objects API'},
     ],
     onChange: fn(),
     onAdd: fn(),
@@ -134,6 +143,12 @@ export default {
             haalcentraal: [
               {id: 'bsn', label: 'BSN'},
               {id: 'verblijfsAdres.postcode', label: 'Verblijfsadres > Postcode'},
+            ],
+            objects: [
+              {id: 'street', label: 'Address > street'},
+              {id: 'firstName', label: 'First name'},
+              {id: 'lastName', label: 'Last name'},
+              {id: 'age', label: 'Age'},
             ],
           }),
         ],
@@ -513,6 +528,35 @@ export const ConfigurePrefill = {
     const pluginDropdown = await screen.findByLabelText('Plugin');
     expect(pluginDropdown).toBeVisible();
     expect(await within(pluginDropdown).findByRole('option', {name: 'StUF-BG'})).toBeVisible();
+  },
+};
+
+export const ConfigurePrefillObjectsAPI = {
+  play: async ({canvasElement}) => {
+    const canvas = within(canvasElement);
+
+    const userDefinedVarsTab = await canvas.findByRole('tab', {name: 'Gebruikersvariabelen'});
+    expect(userDefinedVarsTab).toBeVisible();
+    await userEvent.click(userDefinedVarsTab);
+
+    // open modal for configuration
+    const editIcon = canvas.getByTitle('Prefill instellen');
+    await userEvent.click(editIcon);
+
+    const pluginDropdown = await screen.findByLabelText('Plugin');
+    expect(pluginDropdown).toBeVisible();
+
+    await userEvent.selectOptions(pluginDropdown, 'objects');
+
+    const variableSelect = await screen.findByLabelText('Formuliervariabele');
+    await expect(variableSelect.value).toBe('formioComponent');
+
+    // Wait until the API call to retrieve the prefillAttributes is done
+    await waitFor(async () => {
+      const prefillAttributeSelect = await screen.findByLabelText('Prefill attribute');
+      expect(prefillAttributeSelect).toBeVisible();
+      await expect(prefillAttributeSelect.value).toBe('street');
+    });
   },
 };
 
