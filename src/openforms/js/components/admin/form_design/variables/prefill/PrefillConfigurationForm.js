@@ -11,9 +11,13 @@ import Fieldset from 'components/admin/forms/Fieldset';
 import FormRow from 'components/admin/forms/FormRow';
 import Select, {LOADING_OPTION} from 'components/admin/forms/Select';
 import SubmitRow from 'components/admin/forms/SubmitRow';
+import ErrorBoundary from 'components/errors/ErrorBoundary';
 import {get} from 'utils/fetch';
 
 import VariableMapping from '../../logic/actions/dmn/VariableMapping';
+import ObjectTypeSelect from '../../registrations/objectsapi/fields/ObjectTypeSelect';
+import ObjectTypeVersionSelect from '../../registrations/objectsapi/fields/ObjectTypeVersionSelect';
+import ObjectsAPIGroup from '../../registrations/objectsapi/fields/ObjectsAPIGroup';
 import {IDENTIFIER_ROLE_CHOICES} from '../constants';
 
 const PrefillConfigurationForm = ({
@@ -21,7 +25,12 @@ const PrefillConfigurationForm = ({
   plugin = '',
   attribute = '',
   identifierRole = 'main',
-  prefillOptions = {apiGroup: '', mappings: []},
+  prefillOptions = {
+    objectsApiGroup: '',
+    objecttype: '',
+    objecttypeVersion: null,
+    variablesMapping: [],
+  },
   errors,
 }) => {
   const [choices, setChoices] = useState([]);
@@ -194,6 +203,13 @@ const PrefillFields = ({prefillAttributes, errors}) => (
 
 const ObjectsAPIPrefillFields = ({prefillAttributes, values, errors}) => {
   const intl = useIntl();
+  const {
+    plugins: {availablePrefillPlugins},
+  } = useContext(FormContext);
+  const {setFieldValue} = useFormikContext();
+  const objectsPlugin = availablePrefillPlugins.find(elem => elem.id === 'objects');
+  const apiGroups = objectsPlugin.extra.apiGroups;
+
   const prefillAttributeLabel = intl.formatMessage({
     description: 'Accessible label for prefill attribute dropdown',
     defaultMessage: 'Prefill attribute',
@@ -217,20 +233,63 @@ const ObjectsAPIPrefillFields = ({prefillAttributes, values, errors}) => {
           </Field>
         </FormRow>
 
-        <FormRow>
-          <Field
-            name="attribute"
-            label={
-              <FormattedMessage
-                description="Objects API prefill API group label"
-                defaultMessage="API group"
-              />
-            }
-            errors={errors.apiGroup}
-          >
-            <AttributeField prefillAttributes={prefillAttributes} />
-          </Field>
-        </FormRow>
+        {/* TODO copied from V2ConfigFields, should probably be reused */}
+        <ObjectsAPIGroup
+          prefix="prefillOptions"
+          errors={errors['prefillOptions.apiGroup']}
+          apiGroupChoices={apiGroups}
+          onChangeCheck={() => {
+            if (values.prefillOptions.variablesMapping.length === 0) return true;
+            const confirmSwitch = window.confirm(
+              intl.formatMessage({
+                description:
+                  'Objects API registration options: warning message when changing the api group',
+                defaultMessage: `Changing the api group will remove the existing variables mapping.
+                Are you sure you want to continue?`,
+              })
+            );
+            if (!confirmSwitch) return false;
+            setFieldValue('prefillOptions.variablesMapping', []);
+            return true;
+          }}
+        />
+        <ErrorBoundary
+          errorMessage={
+            <FormattedMessage
+              description="Objects API registrations options: object type select error"
+              defaultMessage="Something went wrong retrieving the available object types."
+            />
+          }
+        >
+          <ObjectTypeSelect
+            prefix="prefillOptions"
+            onChangeCheck={() => {
+              if (values.prefillOptions.variablesMapping.length === 0) return true;
+              const confirmSwitch = window.confirm(
+                intl.formatMessage({
+                  description:
+                    'Objects API registration options: warning message when changing the object type',
+                  defaultMessage: `Changing the objecttype will remove the existing variables mapping.
+                  Are you sure you want to continue?`,
+                })
+              );
+              if (!confirmSwitch) return false;
+              setFieldValue('prefillOptions.variablesMapping', []);
+              return true;
+            }}
+          />
+        </ErrorBoundary>
+
+        <ErrorBoundary
+          errorMessage={
+            <FormattedMessage
+              description="Objects API registrations options: object type version select error"
+              defaultMessage="Something went wrong retrieving the available object type versions."
+            />
+          }
+        >
+          <ObjectTypeVersionSelect prefix="prefillOptions" />
+        </ErrorBoundary>
       </Fieldset>
 
       <Fieldset
@@ -244,13 +303,15 @@ const ObjectsAPIPrefillFields = ({prefillAttributes, values, errors}) => {
         <FormRow>
           <VariableMapping
             loading={false}
-            mappingName="prefillOptions.mappings"
+            mappingName="prefillOptions.variablesMapping"
             targets={prefillAttributes}
             targetsFieldName="prefillAttribute"
             targetsColumnLabel={prefillAttributeLabel}
             selectAriaLabel={prefillAttributeLabel}
             cssBlockName="objects-prefill"
-            alreadyMapped={values.prefillOptions.mappings.map(mapping => mapping.prefillAttribute)}
+            alreadyMapped={values.prefillOptions.variablesMapping.map(
+              mapping => mapping.prefillAttribute
+            )}
           />
         </FormRow>
       </Fieldset>

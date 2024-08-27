@@ -4,6 +4,13 @@ import {mockPrefillAttributesGet} from 'components/admin/form_design/mocks';
 import {BACKEND_OPTIONS_FORMS} from 'components/admin/form_design/registrations';
 import {mockTargetPathsPost} from 'components/admin/form_design/registrations/objectsapi/mocks';
 
+import {
+  mockCataloguesGet,
+  mockDocumentTypesGet,
+  mockObjecttypeVersionsGet,
+  mockObjecttypesError,
+  mockObjecttypesGet,
+} from '../registrations/objectsapi/mocks';
 import {FormDecorator} from '../story-decorators';
 import VariablesEditor from './VariablesEditor';
 
@@ -74,8 +81,10 @@ const VARIABLES = [
     serviceFetchConfiguration: undefined,
     initialValue: [],
     prefillOptions: {
-      apiGroup: 1,
-      mappings: [{formVariable: 'formioComponent', prefillAttribute: 'street'}],
+      objectsApiGroup: 1,
+      objecttype: '2c77babf-a967-4057-9969-0200320d23f2',
+      objecttypeVersion: 1,
+      variablesMapping: [{formVariable: 'formioComponent', prefillAttribute: 'street'}],
     },
   },
 ];
@@ -124,7 +133,16 @@ export default {
     availablePrefillPlugins: [
       {id: 'stuf-bg', label: 'StUF-BG'},
       {id: 'haalcentraal', label: 'BRP Personen (HaalCentraal)'},
-      {id: 'objects', label: 'Objects API'},
+      {
+        id: 'objects',
+        label: 'Objects API',
+        extra: {
+          apiGroups: [
+            [1, 'Objects API group 1'],
+            [2, 'Objects API group 2'],
+          ],
+        },
+      },
     ],
     onChange: fn(),
     onAdd: fn(),
@@ -151,6 +169,26 @@ export default {
               {id: 'age', label: 'Age'},
             ],
           }),
+          mockObjecttypesGet([
+            {
+              url: 'https://objecttypen.nl/api/v1/objecttypes/2c77babf-a967-4057-9969-0200320d23f1',
+              uuid: '2c77babf-a967-4057-9969-0200320d23f1',
+              name: 'Tree',
+              namePlural: 'Trees',
+              dataClassification: 'open',
+            },
+            {
+              url: 'https://objecttypen.nl/api/v1/objecttypes/2c77babf-a967-4057-9969-0200320d23f2',
+              uuid: '2c77babf-a967-4057-9969-0200320d23f2',
+              name: 'Person',
+              namePlural: 'Persons',
+              dataClassification: 'open',
+            },
+          ]),
+          mockObjecttypeVersionsGet([
+            {version: 1, status: 'published'},
+            {version: 2, status: 'draft'},
+          ]),
         ],
       },
     },
