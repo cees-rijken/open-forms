@@ -10,6 +10,7 @@ from openforms.typing import JSONEncodable
 from ...base import BasePlugin
 from ...constants import IdentifierRoles
 from ...registry import register
+from .utils import retrieve_properties
 
 logger = logging.getLogger(__name__)
 
@@ -25,7 +26,8 @@ class ObjectsAPIPrefill(BasePlugin):
     def get_available_attributes(
         reference: dict[str, Any] | None = None,
     ) -> Iterable[tuple[str, str]]:
-        pass
+        assert reference is not None
+        return retrieve_properties(reference)
 
     @classmethod
     def get_prefill_values(
@@ -40,4 +42,7 @@ class ObjectsAPIPrefill(BasePlugin):
     def get_co_sign_values(
         cls, submission: Submission, identifier: str
     ) -> tuple[dict[str, Any], str]:
+        pass
+
+    def check_config(self):
         pass
