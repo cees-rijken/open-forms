@@ -72,7 +72,7 @@ const VARIABLES = [
     name: 'User defined',
     key: 'userDefined',
     source: 'user_defined',
-    prefillPlugin: 'objects',
+    prefillPlugin: 'objects_api',
     prefillAttribute: '',
     prefillIdentifierRole: 'main',
     dataType: 'array',
@@ -134,7 +134,7 @@ export default {
       {id: 'stuf-bg', label: 'StUF-BG'},
       {id: 'haalcentraal', label: 'BRP Personen (HaalCentraal)'},
       {
-        id: 'objects',
+        id: 'objects_api',
         label: 'Objects API',
         extra: {
           apiGroups: [
@@ -162,7 +162,7 @@ export default {
               {id: 'bsn', label: 'BSN'},
               {id: 'verblijfsAdres.postcode', label: 'Verblijfsadres > Postcode'},
             ],
-            objects: [
+            objects_api: [
               {id: 'street', label: 'Address > street'},
               {id: 'firstName', label: 'First name'},
               {id: 'lastName', label: 'Last name'},
@@ -584,7 +584,7 @@ export const ConfigurePrefillObjectsAPI = {
     const pluginDropdown = await screen.findByLabelText('Plugin');
     expect(pluginDropdown).toBeVisible();
 
-    await userEvent.selectOptions(pluginDropdown, 'objects');
+    await userEvent.selectOptions(pluginDropdown, 'objects_api');
 
     const variableSelect = await screen.findByLabelText('Formuliervariabele');
     await expect(variableSelect.value).toBe('formioComponent');

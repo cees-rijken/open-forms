@@ -2,6 +2,7 @@ import {Formik, useField, useFormikContext} from 'formik';
 import PropTypes from 'prop-types';
 import React, {useContext, useEffect, useState} from 'react';
 import {FormattedMessage, useIntl} from 'react-intl';
+import useAsync from 'react-use/esm/useAsync';
 import useUpdateEffect from 'react-use/esm/useUpdateEffect';
 
 import {FormContext} from 'components/admin/form_design/Context';
@@ -33,26 +34,27 @@ const PrefillConfigurationForm = ({
   },
   errors,
 }) => {
-  const [choices, setChoices] = useState([]);
+  // const [choices, setChoices] = useState([]);
 
-  // XXX: we're not using formik's initialErrors yet because it doesn't support arrays of
-  // error messages, which our backend *can* produce.
-  // Taken from https://react.dev/reference/react/useEffect#fetching-data-with-effects
-  useEffect(() => {
-    let ignore = false;
-    setChoices(null);
+  // Load the possible prefill attributes
+  // XXX: this would benefit from client-side caching
+  const {
+    loading,
+    value = [],
+    error,
+  } = useAsync(async () => {
+    if (!plugin) return [];
+
     const endpoint = `/api/v2/prefill/plugins/${plugin}/attributes`;
     // XXX: clean up error handling here at some point...
-    get(endpoint).then(response => {
-      if (!response.ok) throw response.data;
-      if (!ignore) setChoices(response.data.map(attribute => [attribute.id, attribute.label]));
-    });
-    return () => {
-      ignore = true;
-    };
-  }, []);
+    const response = await get(endpoint);
+    if (!response.ok) throw response.data;
+    return response.data.map(attribute => [attribute.id, attribute.label]);
+  }, [plugin]);
 
-  const prefillAttributes = choices || LOADING_OPTION;
+  // throw errors to the nearest error boundary
+  if (error) throw error;
+  const prefillAttributes = loading ? LOADING_OPTION : value;
 
   return (
     <Formik
@@ -70,7 +72,7 @@ const PrefillConfigurationForm = ({
     >
       {({handleSubmit, values}) => (
         <>
-          {values.plugin === 'objects' ? (
+          {values.plugin === 'objects_api' ? (
             <ObjectsAPIPrefillFields
               prefillAttributes={prefillAttributes}
               values={values}
@@ -207,8 +209,9 @@ const ObjectsAPIPrefillFields = ({prefillAttributes, values, errors}) => {
     plugins: {availablePrefillPlugins},
   } = useContext(FormContext);
   const {setFieldValue} = useFormikContext();
-  const objectsPlugin = availablePrefillPlugins.find(elem => elem.id === 'objects');
+  const objectsPlugin = availablePrefillPlugins.find(elem => elem.id === 'objects_api');
   const apiGroups = objectsPlugin.extra.apiGroups;
+  console.log(values);
 
   const prefillAttributeLabel = intl.formatMessage({
     description: 'Accessible label for prefill attribute dropdown',
