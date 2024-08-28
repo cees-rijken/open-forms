@@ -6,6 +6,15 @@ from rest_framework.exceptions import NotFound
 from rest_framework.views import APIView
 
 from openforms.api.views import ListMixin
+from openforms.registrations.contrib.objects_api.api.serializers import (
+    ObjectsAPIGroupInputSerializer,
+)
+from openforms.registrations.contrib.objects_api.api.views import (
+    OBJECTS_API_GROUP_QUERY_PARAMETER,
+    ObjecttypesListView,
+    ObjecttypeVersionsListView,
+)
+from openforms.registrations.contrib.objects_api.client import get_objecttypes_client
 
 from ..registry import register
 from .serializers import (
@@ -65,5 +74,75 @@ class PluginAttributesListView(ListMixin, APIView):
                 detail=_("No plugin with ID '{plugin}' found").format(**self.kwargs)
             )
         choices = plugin.get_available_attributes()
+
+        return [ChoiceWrapper(choice) for choice in choices]
+
+
+@extend_schema(
+    summary=_("List available objecttypes for Objects API"),
+    parameters=[OBJECTS_API_GROUP_QUERY_PARAMETER],
+)
+class PluginObjectsAPIObjecttypeListView(ObjecttypesListView):
+    """
+    List the available prefill objecttypes for Objects API plugin.
+    """
+
+    pass
+
+
+@extend_schema(
+    summary=_("List available objecttype versions for Objects API"),
+    parameters=[OBJECTS_API_GROUP_QUERY_PARAMETER],
+)
+class PluginObjectsAPIObjecttypeVersionListView(ObjecttypeVersionsListView):
+    """
+    List the available prefill objecttype versions for Objects API plugin.
+    """
+
+    def get_objects(self):
+        input_serializer = ObjectsAPIGroupInputSerializer(
+            data=self.request.query_params
+        )
+        input_serializer.is_valid(raise_exception=True)
+
+        config_group = input_serializer.validated_data["objects_api_group"]
+        objecttype_uuid = self.kwargs["objects_api_objecttype_uuid"]
+
+        with get_objecttypes_client(config_group) as client:
+            return client.list_objecttype_versions(objecttype_uuid)
+
+
+@extend_schema(
+    summary=_("List available attributes for Objects API"),
+    parameters=[OBJECTS_API_GROUP_QUERY_PARAMETER],
+)
+class PluginObjectsAPIAttributesListView(ListMixin, APIView):
+    """
+    List the available attributes for Objects API plugin.
+    """
+
+    authentication_classes = (authentication.SessionAuthentication,)
+    permission_classes = (permissions.IsAdminUser,)
+    serializer_class = PrefillAttributeSerializer
+
+    def get_objects(self):
+        plugin = register["objects_api"]
+        input_serializer = ObjectsAPIGroupInputSerializer(
+            data=self.request.query_params
+        )
+        input_serializer.is_valid(raise_exception=True)
+
+        config_group = input_serializer.validated_data["objects_api_group"]
+        choices = plugin.get_available_attributes(
+            reference={
+                "objects_api_group": config_group,
+                "objects_api_objecttype_uuid": self.kwargs[
+                    "objects_api_objecttype_uuid"
+                ],
+                "objects_api_objecttype_version": self.kwargs[
+                    "objects_api_objecttype_version"
+                ],
+            }
+        )
 
         return [ChoiceWrapper(choice) for choice in choices]

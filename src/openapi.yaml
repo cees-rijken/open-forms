@@ -3586,6 +3586,123 @@ paths:
               $ref: '#/components/headers/X-Is-Form-Designer'
             Content-Language:
               $ref: '#/components/headers/Content-Language'
+  /api/v2/prefill/plugins/objects-api/objecttypes:
+    get:
+      operationId: prefill_plugins_objects_api_objecttypes_list
+      description: List the available prefill objecttypes for Objects API plugin.
+      summary: List available objecttypes for Objects API
+      parameters:
+      - in: query
+        name: objects_api_group
+        schema:
+          type: string
+        description: Which Objects API group to use.
+      tags:
+      - registration
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Objecttype'
+          description: ''
+          headers:
+            X-Session-Expires-In:
+              $ref: '#/components/headers/X-Session-Expires-In'
+            X-CSRFToken:
+              $ref: '#/components/headers/X-CSRFToken'
+            X-Is-Form-Designer:
+              $ref: '#/components/headers/X-Is-Form-Designer'
+            Content-Language:
+              $ref: '#/components/headers/Content-Language'
+  /api/v2/prefill/plugins/objects-api/objecttypes/{objects_api_objecttype_uuid}/versions:
+    get:
+      operationId: prefill_plugins_objects_api_objecttypes_versions_list
+      description: List the available prefill objecttype versions for Objects API
+        plugin.
+      summary: List available objecttype versions for Objects API
+      parameters:
+      - in: query
+        name: objects_api_group
+        schema:
+          type: string
+        description: Which Objects API group to use.
+      - in: path
+        name: objects_api_objecttype_uuid
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - registration
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ObjecttypeVersion'
+          description: ''
+          headers:
+            X-Session-Expires-In:
+              $ref: '#/components/headers/X-Session-Expires-In'
+            X-CSRFToken:
+              $ref: '#/components/headers/X-CSRFToken'
+            X-Is-Form-Designer:
+              $ref: '#/components/headers/X-Is-Form-Designer'
+            Content-Language:
+              $ref: '#/components/headers/Content-Language'
+  ? /api/v2/prefill/plugins/objects-api/objecttypes/{objects_api_objecttype_uuid}/versions/{objects_api_objecttype_version}/attributes
+  : get:
+      operationId: prefill_plugins_objects_api_objecttypes_versions_attributes_list
+      description: List the available attributes for Objects API plugin.
+      summary: List available attributes for Objects API
+      parameters:
+      - in: query
+        name: objects_api_group
+        schema:
+          type: string
+        description: Which Objects API group to use.
+      - in: path
+        name: objects_api_objecttype_uuid
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: path
+        name: objects_api_objecttype_version
+        schema:
+          type: integer
+        required: true
+      tags:
+      - prefill
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PrefillAttribute'
+          description: ''
+          headers:
+            X-Session-Expires-In:
+              $ref: '#/components/headers/X-Session-Expires-In'
+            X-CSRFToken:
+              $ref: '#/components/headers/X-CSRFToken'
+            X-Is-Form-Designer:
+              $ref: '#/components/headers/X-Is-Form-Designer'
+            Content-Language:
+              $ref: '#/components/headers/Content-Language'
   /api/v2/products:
     get:
       operationId: products_list
