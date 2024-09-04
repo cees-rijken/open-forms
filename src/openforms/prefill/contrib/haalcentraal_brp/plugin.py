@@ -12,6 +12,7 @@ from openforms.contrib.haal_centraal.clients import NoServiceConfigured, get_brp
 from openforms.contrib.haal_centraal.clients.brp import BRPClient
 from openforms.contrib.haal_centraal.constants import BRPVersions
 from openforms.contrib.haal_centraal.models import HaalCentraalConfig
+from openforms.forms.api.typing import _BasePrefillOptions
 from openforms.plugins.exceptions import InvalidPluginConfiguration
 from openforms.pre_requests.clients import PreRequestClientContext
 from openforms.submissions.models import Submission
@@ -108,6 +109,7 @@ class HaalCentraalPrefill(BasePlugin):
         cls,
         submission: Submission,
         attributes: list[str],
+        prefill_options: _BasePrefillOptions,
         identifier_role: IdentifierRoles = IdentifierRoles.main,
     ) -> dict[str, Any]:
         try:

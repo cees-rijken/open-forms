@@ -1,7 +1,6 @@
-from typing import TYPE_CHECKING, Required, TypedDict
+from typing import Required, TypedDict
 
-if TYPE_CHECKING:
-    from openforms.registrations.contrib.objects_api.models import ObjectsAPIGroupConfig
+from openforms.registrations.contrib.objects_api.models import ObjectsAPIGroupConfig
 
 
 class _BasePrefillOptions(TypedDict):

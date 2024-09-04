@@ -4,6 +4,7 @@ from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 
 from openforms.authentication.service import AuthAttribute
+from openforms.forms.api.typing import _BasePrefillOptions
 from openforms.plugins.exceptions import InvalidPluginConfiguration
 from openforms.submissions.models import Submission
 from openforms.typing import JSONEncodable, JSONObject
@@ -48,6 +49,7 @@ class SuwinetPrefill(BasePlugin):
         cls,
         submission: Submission,
         attributes: list[str],
+        prefill_options: _BasePrefillOptions,
         identifier_role: IdentifierRoles = IdentifierRoles.main,
     ) -> dict[str, JSONEncodable]:
         if not (

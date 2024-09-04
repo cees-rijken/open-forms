@@ -9,6 +9,7 @@ from glom import T as Target, glom
 from lxml import etree
 
 from openforms.authentication.service import AuthAttribute
+from openforms.forms.api.typing import _BasePrefillOptions
 from openforms.plugins.exceptions import InvalidPluginConfiguration
 from openforms.submissions.models import Submission
 from openforms.utils.xml import fromstring
@@ -161,6 +162,7 @@ class StufBgPrefill(BasePlugin):
         cls,
         submission: Submission,
         attributes: list[str],
+        prefill_options: _BasePrefillOptions,
         identifier_role: IdentifierRoles = IdentifierRoles.main,
     ) -> dict[str, Any]:
         if not (bsn_value := cls.get_identifier_value(submission, identifier_role)):

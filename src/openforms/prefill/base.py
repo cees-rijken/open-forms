@@ -1,6 +1,7 @@
 from typing import Any, Container, Iterable
 
 from openforms.authentication.service import AuthAttribute
+from openforms.forms.api.typing import ObjectsAPIPrefillOptions, _BasePrefillOptions
 from openforms.plugins.plugin import AbstractBasePlugin
 from openforms.submissions.models import Submission
 from openforms.typing import JSONEncodable
@@ -36,7 +37,8 @@ class BasePlugin(AbstractBasePlugin):
     def get_prefill_values(
         cls,
         submission: Submission,
-        attributes: list[str],
+        prefill_options: _BasePrefillOptions | ObjectsAPIPrefillOptions,
+        attributes: list[str] | None = None,
         identifier_role: IdentifierRoles = IdentifierRoles.main,
     ) -> dict[str, JSONEncodable]:
         """
@@ -46,6 +48,9 @@ class BasePlugin(AbstractBasePlugin):
           the required context to fetch the correct prefill values.
         :param attributes: a list of requested prefill attributes, provided in bulk
           to efficiently fetch as much data as possible with the minimal amount of calls.
+          For some plugins (like ObjectsAPI) this is not useful since we use the prefill_options
+        :param prefill_options: :class: `_BasePrefillOptions`, where all the necessary
+          options for the prefill plugin are stored.
         :param identifier_role: A string with one of the choices in :class:`IdentifierRoles`
         :return: a key-value dictionary, where the key is the requested attribute and
           the value is the prefill value to use for that attribute.

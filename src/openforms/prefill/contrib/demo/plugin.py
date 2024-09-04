@@ -6,6 +6,7 @@ from django.utils.crypto import get_random_string
 from django.utils.translation import gettext_lazy as _
 
 from openforms.config.data import Action
+from openforms.forms.api.typing import _BasePrefillOptions
 from openforms.submissions.models import Submission
 
 from ...base import BasePlugin
@@ -33,6 +34,7 @@ class DemoPrefill(BasePlugin):
         cls,
         submission: Submission,
         attributes: list[str],
+        prefill_options: _BasePrefillOptions,
         identifier_role: IdentifierRoles = IdentifierRoles.main,
     ) -> dict[str, Any]:
         """
@@ -42,6 +44,9 @@ class DemoPrefill(BasePlugin):
           the required context to fetch the correct prefill values.
         :param attributes: a list of requested prefill attributes, provided in bulk
           to efficiently fetch as much data as possible with the minimal amount of calls.
+        :param prefill_options: :class: `_BasePrefillOptions`, where all the necessary
+          options for the prefill plugin are stored.
+        :param identifier_role: A string with one of the choices in :class:`IdentifierRoles`
         """
         return {attr: CALLBACKS[attr]() for attr in attributes}
 

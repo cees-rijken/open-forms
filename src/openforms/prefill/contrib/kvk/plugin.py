@@ -11,6 +11,7 @@ from openforms.authentication.service import AuthAttribute
 from openforms.contrib.kvk.api_models.basisprofiel import BasisProfiel
 from openforms.contrib.kvk.client import NoServiceConfigured, get_kvk_profile_client
 from openforms.contrib.kvk.models import KVKConfig
+from openforms.forms.api.typing import _BasePrefillOptions
 from openforms.plugins.exceptions import InvalidPluginConfiguration
 from openforms.submissions.models import Submission
 
@@ -59,6 +60,7 @@ class KVK_KVKNumberPrefill(BasePlugin):
         cls,
         submission: Submission,
         attributes: list[str],
+        prefill_options: _BasePrefillOptions,
         identifier_role: str = IdentifierRoles.main,
     ) -> dict[str, Any]:
         # check if submission was logged in with the identifier we're interested
