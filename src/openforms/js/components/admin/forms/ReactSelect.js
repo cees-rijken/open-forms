@@ -2,6 +2,7 @@ import {getReactSelectStyles} from '@open-formulieren/formio-builder/esm/compone
 import {useField} from 'formik';
 import PropTypes from 'prop-types';
 import ReactSelect from 'react-select';
+import classNames from 'classnames';
 
 const initialStyles = getReactSelectStyles();
 const styles = {
@@ -40,11 +41,14 @@ const styles = {
  * variant.
  */
 const SelectWithoutFormik = ({name, options, value, className, onChange, ...props}) => {
+  const classes = classNames("admin-react-select", {
+    [`${className}`]: className
+  });
   return (
     <ReactSelect
       inputId={`id_${name}`}
       name={name}
-      className={`admin-react-select ${className || ''}`}
+      className={classes}
       classNamePrefix="admin-react-select"
       styles={styles}
       menuPlacement="auto"
@@ -67,10 +71,13 @@ const SelectWithFormik = ({name, options, className, ...props}) => {
   const [fieldProps, , fieldHelpers] = useField(name);
   const {value} = fieldProps;
   const {setValue} = fieldHelpers;
+  const classes = classNames("admin-react-select", {
+    [`${className}`]: className
+  });
   return (
     <ReactSelect
       inputId={`id_${name}`}
-      className={`admin-react-select ${className || ''}`}
+      className={classes}
       classNamePrefix="admin-react-select"
       styles={styles}
       menuPlacement="auto"
