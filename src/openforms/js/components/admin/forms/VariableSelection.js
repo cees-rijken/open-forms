@@ -3,6 +3,7 @@ import React, {useContext} from 'react';
 
 import {FormContext} from 'components/admin/form_design/Context';
 
+import {VARIABLE_SOURCES} from '../form_design/variables/constants';
 import {SelectWithoutFormik} from './ReactSelect';
 
 const allowAny = () => true;
@@ -24,14 +25,36 @@ const VariableSelection = ({
   });
 
   const allFormVariables = (includeStaticVariables ? staticVariables : []).concat(formVariables);
+
+  const getVariableSource = variable => {
+    if (variable.source === VARIABLE_SOURCES.userDefined) {
+      return 'user variables';
+    }
+    if (variable.source === VARIABLE_SOURCES.component) {
+      return 'component variables';
+    }
+    return 'static variables';
+  };
+
   const choices = allFormVariables
     .filter(variable => filter(variable))
-    .map(variable => {
-      const label = formDefinitionsNames[variable.formDefinition]
+    .reduce(
+      (variableGroups, variable) => {
+        const label = formDefinitionsNames[variable.formDefinition]
         ? `${formDefinitionsNames[variable.formDefinition]}: ${variable.name} (${variable.key})`
         : `${variable.name} (${variable.key})`;
-      return {value: variable.key, label};
-    });
+
+        variableGroups
+          .find(group => group.label === getVariableSource(variable))
+          .options.push({value: variable.key, label});
+        return variableGroups;
+      },
+      [
+        {label: 'user variables', options: []},
+        {label: 'component variables', options: []},
+        {label: 'static variables', options: []},
+      ]
+    );
 
   return (
     <SelectWithoutFormik
