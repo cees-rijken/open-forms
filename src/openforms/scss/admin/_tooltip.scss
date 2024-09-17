@@ -72,9 +72,18 @@ div.help {
   }
 }
 
-// Unsure why Django hides the overflow here :/
-.form-row:has(.help) {
-  overflow: visible;
+.form-row {
+  // bootstrap styles compete with django .form-row styles...
+  display: block !important;
+
+  > div > .flex-container > label {
+    box-sizing: initial;
+  }
+
+  // Unsure why Django hides the overflow here :/
+  &:has(.help) {
+    overflow: visible;
+  }
 }
 
 // field on a single form row with multiple fields, without validation errors
@@ -110,4 +119,9 @@ div:has(> .errorlist + .fieldBox + .help) {
 div:has(> .help):not(:has(> .fieldBox)) {
   display: flex;
   column-gap: 2px;
+  flex-wrap: wrap;
+
+  > .errorlist {
+    width: 100%;
+  }
 }
