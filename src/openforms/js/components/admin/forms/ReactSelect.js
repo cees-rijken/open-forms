@@ -32,18 +32,42 @@ const styles = {
 };
 
 /**
+ * A select dropdown backed by react-select for regular usage.
+ *
+ * Any additional props are forwarded to the underlying ReactSelect component.
+ */
+const SelectWithoutFormik = ({name, options, value, className, onChange, ...props}) => {
+  return (
+    <ReactSelect
+      inputId={`id_${name}`}
+      name={name}
+      className={`admin-react-select ${className || ''}`}
+      classNamePrefix="admin-react-select"
+      styles={styles}
+      menuPlacement="auto"
+      options={options}
+      value={options.find(opt => opt.value === value) || null}
+      onChange={selectedOption => {
+        onChange(selectedOption === null ? undefined : selectedOption.value);
+      }}
+      {...props}
+    />
+  );
+};
+
+/**
  * A select dropdown backed by react-select for Formik forms.
  *
- * Any additional props are forwarded to the underlyng ReactSelect component.
+ * Any additional props are forwarded to the underlying ReactSelect component.
  */
-const Select = ({name, options, ...props}) => {
+const SelectWithFormik = ({name, options, className, ...props}) => {
   const [fieldProps, , fieldHelpers] = useField(name);
   const {value} = fieldProps;
   const {setValue} = fieldHelpers;
   return (
     <ReactSelect
       inputId={`id_${name}`}
-      className="admin-react-select"
+      className={`admin-react-select ${className || ''}`}
       classNamePrefix="admin-react-select"
       styles={styles}
       menuPlacement="auto"
@@ -63,9 +87,15 @@ const Select = ({name, options, ...props}) => {
   );
 };
 
-Select.propTypes = {
+SelectWithoutFormik.propTypes = {
   name: PropTypes.string.isRequired,
   options: PropTypes.arrayOf(PropTypes.object),
 };
 
-export default Select;
+SelectWithFormik.propTypes = {
+  name: PropTypes.string.isRequired,
+  options: PropTypes.arrayOf(PropTypes.object),
+};
+
+export default SelectWithFormik;
+export { SelectWithFormik, SelectWithoutFormik };
