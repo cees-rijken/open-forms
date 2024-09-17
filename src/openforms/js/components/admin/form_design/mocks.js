@@ -61,3 +61,13 @@ export const mockPrefillAttributesGet = pluginAttributes =>
     const attributeList = pluginAttributes[plugin] || [];
     return res(ctx.json(attributeList));
   });
+
+export const mockObjectsAPIPrefillAttributesGet = pluginAttributes =>
+  rest.get(
+    `${API_BASE_URL}/api/v2/prefill/plugins/:plugin/:uuid/versions/:version/attributes`,
+    (req, res, ctx) => {
+      const {plugin, uuid, version} = req.params;
+      const attributeList = pluginAttributes[plugin][uuid][version] || [];
+      return res(ctx.json(attributeList));
+    }
+  );

@@ -34,28 +34,6 @@ const PrefillConfigurationForm = ({
   },
   errors,
 }) => {
-  // const [choices, setChoices] = useState([]);
-
-  // Load the possible prefill attributes
-  // XXX: this would benefit from client-side caching
-  const {
-    loading,
-    value = [],
-    error,
-  } = useAsync(async () => {
-    if (!plugin) return [];
-
-    const endpoint = `/api/v2/prefill/plugins/${plugin}/attributes`;
-    // XXX: clean up error handling here at some point...
-    const response = await get(endpoint);
-    if (!response.ok) throw response.data;
-    return response.data.map(attribute => [attribute.id, attribute.label]);
-  }, [plugin]);
-
-  // throw errors to the nearest error boundary
-  if (error) throw error;
-  const prefillAttributes = loading ? LOADING_OPTION : value;
-
   return (
     <Formik
       initialValues={{
@@ -73,13 +51,9 @@ const PrefillConfigurationForm = ({
       {({handleSubmit, values}) => (
         <>
           {values.plugin === 'objects_api' ? (
-            <ObjectsAPIPrefillFields
-              prefillAttributes={prefillAttributes}
-              values={values}
-              errors={errors}
-            />
+            <ObjectsAPIPrefillFields plugin={plugin} values={values} errors={errors} />
           ) : (
-            <PrefillFields prefillAttributes={prefillAttributes} errors={errors} />
+            <PrefillFields plugin={plugin} errors={errors} />
           )}
 
           <SubmitRow>
@@ -157,53 +131,75 @@ const IdentifierRoleField = () => {
   );
 };
 
-const PrefillFields = ({prefillAttributes, errors}) => (
-  <Fieldset>
-    <FormRow>
-      <Field
-        name="plugin"
-        label={
-          <FormattedMessage description="Variable prefill plugin label" defaultMessage="Plugin" />
-        }
-        errors={errors.plugin}
-      >
-        <PluginField />
-      </Field>
-    </FormRow>
+const PrefillFields = ({plugin, errors}) => {
+  // Load the possible prefill attributes
+  // XXX: this would benefit from client-side caching
+  const {
+    loading,
+    value = [],
+    error,
+  } = useAsync(async () => {
+    if (!plugin) return [];
 
-    <FormRow>
-      <Field
-        name="attribute"
-        label={
-          <FormattedMessage
-            description="Variable prefill attribute label"
-            defaultMessage="Attribute"
-          />
-        }
-        errors={errors.attribute}
-      >
-        <AttributeField prefillAttributes={prefillAttributes} />
-      </Field>
-    </FormRow>
+    const endpoint = `/api/v2/prefill/plugins/${plugin}/attributes`;
+    // XXX: clean up error handling here at some point...
+    const response = await get(endpoint);
+    if (!response.ok) throw response.data;
+    return response.data.map(attribute => [attribute.id, attribute.label]);
+  }, [plugin]);
 
-    <FormRow>
-      <Field
-        name="identifierRole"
-        label={
-          <FormattedMessage
-            description="Variable prefill identifier role label"
-            defaultMessage="Identifier role"
-          />
-        }
-        errors={errors.identifierRole}
-      >
-        <IdentifierRoleField />
-      </Field>
-    </FormRow>
-  </Fieldset>
-);
+  // throw errors to the nearest error boundary
+  if (error) throw error;
+  const prefillAttributes = loading ? LOADING_OPTION : value;
 
-const ObjectsAPIPrefillFields = ({prefillAttributes, values, errors}) => {
+  return (
+    <Fieldset>
+      <FormRow>
+        <Field
+          name="plugin"
+          label={
+            <FormattedMessage description="Variable prefill plugin label" defaultMessage="Plugin" />
+          }
+          errors={errors.plugin}
+        >
+          <PluginField />
+        </Field>
+      </FormRow>
+
+      <FormRow>
+        <Field
+          name="attribute"
+          label={
+            <FormattedMessage
+              description="Variable prefill attribute label"
+              defaultMessage="Attribute"
+            />
+          }
+          errors={errors.attribute}
+        >
+          <AttributeField prefillAttributes={prefillAttributes} />
+        </Field>
+      </FormRow>
+
+      <FormRow>
+        <Field
+          name="identifierRole"
+          label={
+            <FormattedMessage
+              description="Variable prefill identifier role label"
+              defaultMessage="Identifier role"
+            />
+          }
+          errors={errors.identifierRole}
+        >
+          <IdentifierRoleField />
+        </Field>
+      </FormRow>
+    </Fieldset>
+  );
+};
+
+const ObjectsAPIPrefillFields = ({plugin, values, errors}) => {
   const intl = useIntl();
   const {
     plugins: {availablePrefillPlugins},
@@ -211,12 +207,33 @@ const ObjectsAPIPrefillFields = ({prefillAttributes, values, errors}) => {
   const {setFieldValue} = useFormikContext();
   const objectsPlugin = availablePrefillPlugins.find(elem => elem.id === 'objects_api');
   const apiGroups = objectsPlugin.extra.apiGroups;
-  console.log(values);
 
   const prefillAttributeLabel = intl.formatMessage({
     description: 'Accessible label for prefill attribute dropdown',
     defaultMessage: 'Prefill attribute',
   });
+
+  const {objecttype, objecttypeVersion} = values.prefillOptions;
+
+  // Load the possible prefill attributes
+  // XXX: this would benefit from client-side caching
+  const {
+    loading,
+    value = [],
+    error,
+  } = useAsync(async () => {
+    if (!plugin || !objecttype || !objecttypeVersion) return [];
+
+    const endpoint = `/api/v2/prefill/plugins/${plugin}/${objecttype}/versions/${objecttypeVersion}/attributes`;
+    // XXX: clean up error handling here at some point...
+    const response = await get(endpoint);
+    if (!response.ok) throw response.data;
+    return response.data.map(attribute => [attribute.id, attribute.label]);
+  }, [plugin, objecttype, objecttypeVersion]);
+
+  // throw errors to the nearest error boundary
+  if (error) throw error;
+  const prefillAttributes = loading ? LOADING_OPTION : value;
 
   return (
     <>

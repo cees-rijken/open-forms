@@ -1,6 +1,9 @@
 import {expect, fn, screen, userEvent, waitFor, within} from '@storybook/test';
 
-import {mockPrefillAttributesGet} from 'components/admin/form_design/mocks';
+import {
+  mockObjectsAPIPrefillAttributesGet,
+  mockPrefillAttributesGet,
+} from 'components/admin/form_design/mocks';
 import {BACKEND_OPTIONS_FORMS} from 'components/admin/form_design/registrations';
 import {mockTargetPathsPost} from 'components/admin/form_design/registrations/objectsapi/mocks';
 
@@ -84,7 +87,7 @@ const VARIABLES = [
       objectsApiGroup: 1,
       objecttype: '2c77babf-a967-4057-9969-0200320d23f2',
       objecttypeVersion: 1,
-      variablesMapping: [{formVariable: 'formioComponent', prefillAttribute: 'street'}],
+      variablesMapping: [{formVariable: 'formioComponent', prefillAttribute: 'firstName'}],
     },
   },
 ];
@@ -168,6 +171,24 @@ export default {
               {id: 'lastName', label: 'Last name'},
               {id: 'age', label: 'Age'},
             ],
+          }),
+          mockObjectsAPIPrefillAttributesGet({
+            objects_api: {
+              '2c77babf-a967-4057-9969-0200320d23f2': {
+                1: [
+                  {id: 'firstName', label: 'First name'},
+                  {id: 'lastName', label: 'Last name'},
+                  {id: 'age', label: 'Age'},
+                ],
+              },
+              '2c77babf-a967-4057-9969-0200320d23f1': {
+                1: [{id: 'height', label: 'Height'}],
+                2: [
+                  {id: 'height', label: 'Height'},
+                  {id: 'species', label: 'Species'},
+                ],
+              },
+            },
           }),
           mockObjecttypesGet([
             {
@@ -593,7 +614,7 @@ export const ConfigurePrefillObjectsAPI = {
     await waitFor(async () => {
       const prefillAttributeSelect = await screen.findByLabelText('Prefill attribute');
       expect(prefillAttributeSelect).toBeVisible();
-      await expect(prefillAttributeSelect.value).toBe('street');
+      await expect(prefillAttributeSelect.value).toBe('firstName');
     });
   },
 };
