@@ -1,8 +1,8 @@
 import {getReactSelectStyles} from '@open-formulieren/formio-builder/esm/components/formio/select';
+import classNames from 'classnames';
 import {useField} from 'formik';
 import PropTypes from 'prop-types';
 import ReactSelect from 'react-select';
-import classNames from 'classnames';
 
 const initialStyles = getReactSelectStyles();
 const styles = {
@@ -31,7 +31,6 @@ const styles = {
     padding: '5px 2px',
   }),
 };
-
 
 const getValueRecursively = (options, value) => {
   if (!value) {
@@ -68,8 +67,8 @@ const getValueRecursively = (options, value) => {
  * variant.
  */
 const SelectWithoutFormik = ({name, options, value, className, onChange, ...props}) => {
-  const classes = classNames("admin-react-select", {
-    [`${className}`]: className
+  const classes = classNames('admin-react-select', {
+    [`${className}`]: className,
   });
   return (
     <ReactSelect
@@ -98,8 +97,8 @@ const SelectWithFormik = ({name, options, className, ...props}) => {
   const [fieldProps, , fieldHelpers] = useField(name);
   const {value} = fieldProps;
   const {setValue} = fieldHelpers;
-  const classes = classNames("admin-react-select", {
-    [`${className}`]: className
+  const classes = classNames('admin-react-select', {
+    [`${className}`]: className,
   });
   return (
     <ReactSelect
