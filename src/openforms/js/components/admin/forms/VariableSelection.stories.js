@@ -3,6 +3,7 @@ import {useArgs} from '@storybook/preview-api';
 import {FormDecorator} from 'components/admin/form_design/story-decorators';
 
 import VariableSelection from './VariableSelection';
+import {VARIABLE_SOURCES} from '../form_design/variables/constants';
 
 const render = ({name, includeStaticVariables, filter}) => {
   const [{value}, updateArgs] = useArgs();
@@ -36,6 +37,20 @@ export default {
         },
 
         formDefinition: 'foo',
+        name: 'foo',
+        slug: '',
+        url: '',
+        _generatedId: '',
+        isNew: true,
+        validationErrors: [],
+      },
+      {
+        configuration: {
+          display: 'form',
+        },
+
+        formDefinition: 'bar',
+        name: 'bar',
         slug: '',
         url: '',
         _generatedId: '',
@@ -56,9 +71,24 @@ export default {
     availableFormVariables: [
       {
         form: 'bar',
-        formDefinition: 'bar',
+        formDefinition: 'foo',
         name: 'name2',
         key: 'key2',
+        source: VARIABLE_SOURCES.component,
+      },
+      {
+        form: 'bar',
+        formDefinition: 'bar',
+        name: 'name3',
+        key: 'key3',
+        source: VARIABLE_SOURCES.userDefined,
+      },
+      {
+        form: 'bar',
+        formDefinition: 'bar',
+        name: 'name4',
+        key: 'key4',
+        source: VARIABLE_SOURCES.userDefined,
       },
     ],
   },
