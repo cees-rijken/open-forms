@@ -139,7 +139,7 @@ export default {
       {
         id: 'objects_api',
         label: 'Objects API',
-        extra: {
+        extraData: {
           apiGroups: [
             [1, 'Objects API group 1'],
             [2, 'Objects API group 2'],

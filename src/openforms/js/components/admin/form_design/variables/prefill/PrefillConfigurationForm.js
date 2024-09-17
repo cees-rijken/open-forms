@@ -51,9 +51,9 @@ const PrefillConfigurationForm = ({
       {({handleSubmit, values}) => (
         <>
           {values.plugin === 'objects_api' ? (
-            <ObjectsAPIPrefillFields plugin={plugin} values={values} errors={errors} />
+            <ObjectsAPIPrefillFields values={values} errors={errors} />
           ) : (
-            <PrefillFields plugin={plugin} errors={errors} />
+            <PrefillFields values={values} errors={errors} />
           )}
 
           <SubmitRow>
@@ -131,9 +131,10 @@ const IdentifierRoleField = () => {
   );
 };
 
-const PrefillFields = ({plugin, errors}) => {
+const PrefillFields = ({values, errors}) => {
   // Load the possible prefill attributes
   // XXX: this would benefit from client-side caching
+  const plugin = values.plugin;
   const {
     loading,
     value = [],
@@ -199,14 +200,17 @@ const PrefillFields = ({plugin, errors}) => {
   );
 };
 
-const ObjectsAPIPrefillFields = ({plugin, values, errors}) => {
+const ObjectsAPIPrefillFields = ({values, errors}) => {
   const intl = useIntl();
+  const plugin = values.plugin;
+
   const {
     plugins: {availablePrefillPlugins},
   } = useContext(FormContext);
   const {setFieldValue} = useFormikContext();
   const objectsPlugin = availablePrefillPlugins.find(elem => elem.id === 'objects_api');
-  const apiGroups = objectsPlugin.extra.apiGroups;
+
+  const apiGroups = objectsPlugin.extraData.apiGroups;
 
   const prefillAttributeLabel = intl.formatMessage({
     description: 'Accessible label for prefill attribute dropdown',
