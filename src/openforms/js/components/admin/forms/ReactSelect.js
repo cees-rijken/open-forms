@@ -98,4 +98,4 @@ SelectWithFormik.propTypes = {
 };
 
 export default SelectWithFormik;
-export { SelectWithFormik, SelectWithoutFormik };
+export {SelectWithFormik, SelectWithoutFormik};

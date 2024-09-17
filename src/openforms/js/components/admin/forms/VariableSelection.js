@@ -1,8 +1,9 @@
 import PropTypes from 'prop-types';
-import React, { useContext } from 'react';
-import { SelectWithoutFormik } from './ReactSelect';
+import React, {useContext} from 'react';
 
-import { FormContext } from 'components/admin/form_design/Context';
+import {FormContext} from 'components/admin/form_design/Context';
+
+import {SelectWithoutFormik} from './ReactSelect';
 
 const allowAny = () => true;
 
@@ -29,7 +30,7 @@ const VariableSelection = ({
       const label = formDefinitionsNames[variable.formDefinition]
         ? `${formDefinitionsNames[variable.formDefinition]}: ${variable.name} (${variable.key})`
         : `${variable.name} (${variable.key})`;
-      return { value: variable.key, label };
+      return {value: variable.key, label};
     });
 
   return (
@@ -38,7 +39,7 @@ const VariableSelection = ({
       className="form-variable-dropdown"
       name={name}
       options={choices}
-      onChange={newValue => onChange({ target: { name, value: newValue } })}
+      onChange={newValue => onChange({target: {name, value: newValue}})}
       value={value}
       {...props}
     />
