@@ -40,9 +40,10 @@ const VariableSelection = ({
     .filter(variable => filter(variable))
     .reduce(
       (variableGroups, variable) => {
-        const label = formDefinitionsNames[variable.formDefinition]
-        ? `${formDefinitionsNames[variable.formDefinition]}: ${variable.name} (${variable.key})`
-        : `${variable.name} (${variable.key})`;
+        let label = `<span class="form-variable-dropdown__option__label">${variable.name} <code class="form-variable-dropdown__option__key">(${variable.key})</code></span>`;
+        if (formDefinitionsNames[variable.formDefinition]) {
+          label += `<span class="form-variable-dropdown__option__form-definition">${formDefinitionsNames[variable.formDefinition]}</span>`;
+        }
 
         variableGroups
           .find(group => group.label === getVariableSource(variable))
@@ -63,6 +64,12 @@ const VariableSelection = ({
       name={name}
       options={choices}
       onChange={newValue => onChange({target: {name, value: newValue}})}
+      formatOptionLabel={data => (
+        <span
+          className="form-variable-dropdown__option"
+          dangerouslySetInnerHTML={{__html: data.label}}
+        />
+      )}
       value={value}
       {...props}
     />
