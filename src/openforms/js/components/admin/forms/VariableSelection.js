@@ -3,7 +3,7 @@ import React, {useContext} from 'react';
 
 import {FormContext} from 'components/admin/form_design/Context';
 
-import {VARIABLE_SOURCES} from '../form_design/variables/constants';
+import {VARIABLE_SOURCES, VARIABLE_SOURCES_GROUP_LABELS} from '../form_design/variables/constants';
 import {SelectWithoutFormik} from './ReactSelect';
 
 const allowAny = () => true;
@@ -28,12 +28,12 @@ const VariableSelection = ({
 
   const getVariableSource = variable => {
     if (variable.source === VARIABLE_SOURCES.userDefined) {
-      return 'user variables';
+      return VARIABLE_SOURCES_GROUP_LABELS.userDefined;
     }
     if (variable.source === VARIABLE_SOURCES.component) {
-      return 'component variables';
+      return VARIABLE_SOURCES_GROUP_LABELS.component;
     }
-    return 'static variables';
+    return VARIABLE_SOURCES_GROUP_LABELS.static;
   };
 
   const choices = allFormVariables
@@ -51,9 +51,9 @@ const VariableSelection = ({
         return variableGroups;
       },
       [
-        {label: 'user variables', options: []},
-        {label: 'component variables', options: []},
-        {label: 'static variables', options: []},
+        {label: VARIABLE_SOURCES_GROUP_LABELS.userDefined, options: []},
+        {label: VARIABLE_SOURCES_GROUP_LABELS.component, options: []},
+        {label: VARIABLE_SOURCES_GROUP_LABELS.static, options: []},
       ]
     );
 
