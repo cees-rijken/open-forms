@@ -32,9 +32,12 @@ const styles = {
 };
 
 /**
- * A select dropdown backed by react-select for regular usage.
+ * A select dropdown backed by react-select for legacy usage.
  *
  * Any additional props are forwarded to the underlying ReactSelect component.
+ *
+ * @deprecated - if possible, refactor the form to use Formik and use the Formik-enabled
+ * variant.
  */
 const SelectWithoutFormik = ({name, options, value, className, onChange, ...props}) => {
   return (
