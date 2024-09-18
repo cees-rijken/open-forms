@@ -32,10 +32,6 @@ export default {
 
     availableFormSteps: [
       {
-        configuration: {
-          display: 'form',
-        },
-
         formDefinition: 'foo',
         name: 'foo',
         slug: '',
@@ -45,10 +41,6 @@ export default {
         validationErrors: [],
       },
       {
-        configuration: {
-          display: 'form',
-        },
-
         formDefinition: 'bar',
         name: 'bar',
         slug: '',
