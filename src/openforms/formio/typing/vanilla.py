@@ -9,6 +9,7 @@ class TextFieldComponent(Component):
 
 
 class FileConfig(TypedDict):
+    name: NotRequired[str]
     allowedTypesLabels: list[str]
     type: NotRequired[list[str]]
 
@@ -60,6 +61,10 @@ class ColumnsComponent(Component):
     columns: list[Column]
 
 
+class EditGridFileComponent(Component):
+    file: NotRequired[FileConfig]
+
+
 class EditGridComponent(Component):
     groupLabel: NotRequired[str]
-    components: list[Component]
+    components: list[EditGridFileComponent]
