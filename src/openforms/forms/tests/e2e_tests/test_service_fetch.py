@@ -9,7 +9,12 @@ from zgw_consumers.constants import APITypes, AuthTypes
 from zgw_consumers.models import Service
 
 from openforms.config.models import GlobalConfiguration
-from openforms.tests.e2e.base import E2ETestCase, browser_page, create_superuser, rs_select_option
+from openforms.tests.e2e.base import (
+    E2ETestCase,
+    browser_page,
+    create_superuser,
+    rs_select_option,
+)
 from openforms.variables.constants import DataMappingTypes, FormVariableSources
 from openforms.variables.models import ServiceFetchConfiguration
 from openforms.variables.tests.factories import ServiceFetchConfigurationFactory
@@ -30,9 +35,9 @@ async def add_new_variable_with_service_fetch(page: Page):
     await page.get_by_text("Simple").click()
 
     await rs_select_option(
-        page.locator('.form-variable-dropdown').get_by_role("combobox"),
+        page.locator(".form-variable-dropdown").get_by_role("combobox"),
         option_label="environment",
-        exact=False
+        exact=False,
     )
     await page.locator('select[name="operator"]').select_option(label="is equal to")
     await page.locator('select[name="operandType"]').select_option(label="value")
@@ -43,9 +48,9 @@ async def add_new_variable_with_service_fetch(page: Page):
         label="fetch the value for a variable from a service"
     )
     await rs_select_option(
-        page.locator('.form-variable-dropdown').last.get_by_role("combobox"),
+        page.locator(".form-variable-dropdown").last.get_by_role("combobox"),
         option_label="variable1",
-        exact=False
+        exact=False,
     )
 
     await expect(
