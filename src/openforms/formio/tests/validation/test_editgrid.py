@@ -1,16 +1,21 @@
 from collections import namedtuple
 
 from django.test import SimpleTestCase, tag
+from django.urls import reverse
 
-from rest_framework import serializers
+from rest_framework import serializers, status
+from rest_framework.test import APITestCase
 
+from openforms.forms.tests.factories import FormStepFactory
 from openforms.submissions.tests.factories import SubmissionFactory
 from openforms.typing import JSONObject, JSONValue
+from openforms.utils.tests.cache import clear_caches
 
 from ...components.vanilla import EditGridField
 from ...registry import register
 from ...service import build_serializer
 from ...typing import EditGridComponent, FieldsetComponent
+from ..factories import SubmittedFileFactory, TemporaryFileUploadFactory
 from .helpers import extract_error, validate_formio_data
 
 
@@ -510,3 +515,66 @@ class EditGridFieldTests(SimpleTestCase):
             ]
         }
         self.assertEqual(data, expected)
+
+
+class EditGridNestedFilesTests(APITestCase):
+    """
+    Test the editgrid field specifically with nested files in repeating groups.
+
+    The submission needs to be in the context of the serializer's children (bound to the parent)
+    because backend validation of the file uses this.
+    """
+
+    def setUp(self):
+        self.addCleanup(clear_caches)
+        super().setUp()
+
+    @tag("dh-4656")
+    def test_nested_file_step_validate(self):
+        temporary_file_upload = TemporaryFileUploadFactory.create()
+        submission = temporary_file_upload.submission
+        file = SubmittedFileFactory.create(temporary_upload=temporary_file_upload)
+        form_step = FormStepFactory.create(
+            form=submission.form,
+            form_definition__configuration={
+                "components": [
+                    {
+                        "type": "editgrid",
+                        "key": "parent",
+                        "label": "Repeating group",
+                        "components": [
+                            {
+                                "key": "fileUpload1",
+                                "file": {
+                                    "name": "",
+                                    "type": [],
+                                    "allowedTypesLabels": [],
+                                },
+                                "type": "file",
+                                "label": "File Upload",
+                            },
+                        ],
+                    }
+                ]
+            },
+        )
+
+        session = self.client.session
+        ids = session.get("form-submissions", [])
+        ids += [str(submission.uuid)]
+        session["form-submissions"] = ids
+        session.save()
+
+        response = self.client.post(
+            reverse(
+                "api:submission-steps-validate",
+                kwargs={
+                    "submission_uuid": submission.uuid,
+                    "step_uuid": form_step.uuid,
+                },
+            ),
+            {"data": {"parent": [{"fileUpload1": [file]}]}},
+            "json",
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
