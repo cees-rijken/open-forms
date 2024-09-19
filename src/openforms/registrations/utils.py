@@ -6,10 +6,9 @@ from openforms.submissions.models import Submission
 
 unset = object()
 
-
-def execute_unless_result_exists[
-    R
-](
+R = TypeVar['R']
+# Een method die met brackets opent???
+def execute_unless_result_exists(
     callback: Callable[[], R],
     submission: Submission,
     spec: str,
